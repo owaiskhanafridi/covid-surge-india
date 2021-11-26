@@ -15,5 +15,9 @@ shinyUI(fluidPage(
   )
 ) 
 )
+
+
+#for checking built-in shiny R examples
+runExample()
   
   
