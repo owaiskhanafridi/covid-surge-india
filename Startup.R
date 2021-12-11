@@ -8,7 +8,6 @@ install.packages("Shiny")
 library(tidyr)
 library(dplyr)
 library(tidyverse)
-library(textcat)
 library(data.table)
 library(shiny)
 
@@ -127,3 +126,63 @@ map_interactive <- all_data_22 %>%
               )
 
 datelist <- c("asas", asas)
+
+
+library(dplyr)
+data = read.csv("covid_19_india.csv")
+
+total_sum = data %>%
+  mutate(confirmed_cases_of_that_day = Confirmed - Cured + Deaths)
+
+
+c_data <- total_sum %>%
+  group_by(Date) %>%
+  dplyr::summarise(Total = sum(confirmed_cases_of_that_day)) %>%
+  as.data.frame()
+
+
+data = read.csv("IndiaWantsOxygen.csv")
+countries = read.csv("worldcities.csv")
+
+data = as.tibble(data)
+
+countries[nrow(countries) + 1, 5] = "England"
+countries[nrow(countries) + 1, 5] = "INDIA"
+countries[nrow(countries) + 1, 5] = "india"
+countries[nrow(countries) + 1, 5] = "USA"
+countries[nrow(countries) + 1, 5] = "england"
+country_list = unique(countries$country)
+
+
+data_without_empty_values = filter(data, user_location != '')
+
+data_without_empty_values <- data_without_empty_values %>% separate(user_location, c('City', 'Country'))
+
+data_without_empty_values <- data_without_empty_values %>% 
+  mutate(Country = ifelse(match(Country, country_list) > 0, Country, NA))
+
+data_without_empty_values <- data_without_empty_values %>% 
+  mutate(Country = ifelse(match(City, countries$city) > 0 & is.na(Country) , countries$country[match(City, countries$city)], Country))
+
+data_without_empty_values <- data_without_empty_values %>% 
+  mutate(Country = ifelse(match(City, country_list) > 0 & is.na(Country) , countries$country[match(City, countries$country)], Country))
+
+data_without_na_values <- data_without_empty_values %>%
+  select(Country)%>%
+  filter(!is.na(Country))%>%
+  mutate(Country = ifelse(Country == "india" | Country == "INDIA", "India", ifelse(Country == "United States", "USA", Country)), country_count = 1)
+
+
+data_without_na_values = data_without_na_values %>%
+  mutate(country_count = ifelse(Country == "USA", country_count * 3, ifelse(Country == "United Arab Emirates", country_count * 3,ifelse(Country == "Australia", country_count * 8,ifelse(Country == "New Zealand", country_count * 15, ifelse(Country == "Canada", country_count * 10, ifelse(Country == "Germany", country_count * 63, country_count)))))))
+
+data_without_na_values <- data_without_na_values %>%
+  group_by(Country) %>%
+  dplyr::summarise(country_count = sum(country_count)) %>%
+  as.data.frame()
+
+
+world_map = map_data("world")
+world_map = merge(world_map, data_without_na_values, by.x = "region", by.y = "Country")
+
+
