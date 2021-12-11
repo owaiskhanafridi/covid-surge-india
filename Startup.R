@@ -55,7 +55,8 @@ india_wants_oxygen <- read_csv("IndiaWantsOxygen.csv")
 day_wise  <- read_csv("day_wise.csv")
 state_wise_testing_details <- read_csv("StatewiseTestingDetails.csv")
 covid_19_clean_complete <- read_csv("covid_19_clean_complete.csv")
-covid19_india <- read_csv("covid_19_india.csv")
+
+holidays <- read_csv("~/STA 518/STA518_Project/STA518_Project/2020_Holidays.csv")
 
 #Get the maximum positive cases of each state
 state_wise_testing_details %>% group_by(State) %>%  slice(which.max(Positive)) %>% View()
@@ -126,4 +127,32 @@ map_interactive <- all_data_22 %>%
               fillO
               )
 
-datelist <- c("asas", asas)
+
+
+#--------------Festival Visualization----------------
+
+
+covid19_india <- read_csv("covid_19_india.csv")
+festival_2020 <- read_csv("2020_Festivals.csv")
+festival_2021 <- read_csv("2021_Festivals.csv")
+
+festivals_data <- bind_rows(festival_2020, festival_2021) %>% 
+  rename(Date = date)
+
+total_sum = covid19_india %>%
+  mutate(confirmed_cases_of_that_day = Confirmed - Cured + Deaths)
+
+cases_data <- total_sum %>%
+  group_by(Date) %>%
+  summarise(Total = sum(confirmed_cases_of_that_day)) %>%
+  as.data.frame()
+
+
+cases_festival <- left_join(x = cases_data, y = festivals_data, by.x = "Date", by.y = "date")   
+
+
+tota_sum = cases_festival %>%
+  filter(!is.na(holiday)) %>%
+  mutate(before_sum = sum(cases_festival[Date < Date -30 & Date = Date, 2]),
+         after_sum = sum(cases_festival[Date > Date -30 & Date = Date, 2]) )
+
