@@ -78,10 +78,9 @@ server <- function(input, output) {
      after_sum = sum(cases_festival[cases_festival$Date >= input$second_date  &
                                       cases_festival$Date <= input$second_date + 30,2])
 
-  #Important
   holiday_before <-  cases_festival %>%
     filter(!is.na(holiday), Date <= input$first_date , Date >= input$first_date - 30) 
-   # select(holiday)
+   
 
   holiday_after <-  cases_festival %>%
     filter(!is.na(holiday), Date >= input$second_date , Date <= input$second_date + 30) 
@@ -97,32 +96,6 @@ server <- function(input, output) {
 
   ggplot(p_data, aes(fill=p_impact, y=p_value, x=p_festivals)) +
     geom_bar(position="stack", stat="identity", width = -1) 
-    
-    
-    
-    
-    
-    
-
-    # specie <- c(rep("sorgho" , 3) , rep("poacee" , 3) , rep("banana" , 3) , rep("triticum" , 3) )
-    # condition <- rep(c("normal" , "stress" , "nitrogen") , 4)
-    # value <- abs(rnorm(12 , 0 , 15))
-    # data <- data.frame(specie,condition,value)
-    # 
-    # # grouped
-    # ggplot(data, aes(fill=condition, y=value, x=specie)) +
-    #   geom_bar(position="dodge", stat="identity")
-
-    # set.seed(1)
-    # 
-    # age <- factor(sample(c("Child", "Adult", "Retired"),
-    #                      size = 50, replace = TRUE),
-    #               levels = c("Child", "Adult", "Retired"))
-    # hours <- sample(1:4, size = 50, replace = TRUE)
-    # city <- sample(c("A", "B", "C"),
-    #                size = 50, replace = TRUE)
-    # 
-    # df <- data.frame(x = age, y = hours, group = city)
     
   })
 }
