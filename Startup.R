@@ -126,8 +126,6 @@ map_interactive <- all_data_22 %>%
               fillO
               )
 
-<<<<<<< HEAD
-
 
 #--------------Festival Visualization----------------
 
@@ -155,7 +153,7 @@ tota_sum = cases_festival %>%
   filter(!is.na(holiday)) %>%
   mutate(before_sum = sum(cases_festival[Date < Date -30 & Date = Date, 2]),
          after_sum = sum(cases_festival[Date > Date -30 & Date = Date, 2]) )
-=======
+
 datelist <- c("asas", asas)
 
 
@@ -215,6 +213,4 @@ data_without_na_values <- data_without_na_values %>%
 
 world_map = map_data("world")
 world_map = merge(world_map, data_without_na_values, by.x = "region", by.y = "Country")
-
->>>>>>> 8f6f9fece9bd6d4fc26aad80ad5060cecb259b98
 
