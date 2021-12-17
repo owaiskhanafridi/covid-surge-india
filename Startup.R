@@ -40,7 +40,6 @@ states_map <- map_data("state", country="india")
 fee_map <- merge(states_map, spendstate, by.x = "region", by.y = "state")
 
 
-?map_data
 
 states_map %>% View()
 
@@ -163,13 +162,14 @@ data = read.csv("covid_19_india.csv")
 total_sum = data %>%
   mutate(confirmed_cases_of_that_day = Confirmed - Cured + Deaths)
 
-
 c_data <- total_sum %>%
   group_by(Date) %>%
   dplyr::summarise(Total = sum(confirmed_cases_of_that_day)) %>%
   as.data.frame()
 
 
+
+# In the following line of code I am reading two files
 data = read.csv("IndiaWantsOxygen.csv")
 countries = read.csv("worldcities.csv")
 
